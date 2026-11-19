@@ -1,268 +1,119 @@
-# Advanced Classification Uncertainty Quantification: Remote Sensing & Hyperspectral Analysis
+<div align="center">
 
-[![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.10%2B-orange?style=for-the-badge&logo=tensorflow&logoColor=white)](https://img.shields.io/badge/TensorFlow-2.10%2B-orange?style=for-the-badge&logo=tensorflow&logoColor=white)
-[![Uncertainty](https://img.shields.io/badge/Uncertainty-Conformal%20%7C%20Ensemble%20%7C%20Bayesian-green?style=for-the-badge)](https://img.shields.io/badge/Uncertainty-Conformal%20%7C%20Ensemble%20%7C%20Bayesian-green?style=for-the-badge)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
+# Trust, Pixel by Pixel
 
-Welcome to the **Classification Uncertainty Quantification (UQ) Analysis** framework. This repository provides a comprehensive, modular pipeline for quantifying predictive uncertainty in complex classification tasks, specifically optimized for high-dimensional remote sensing and multispectral imagery.
+### Uncertainty Quantification for 6-Band Multispectral Land-Cover Classification
 
-Beyond traditional point-wise accuracy, this framework implements state-of-the-art methods including **Conformal Prediction**, **Credal Deep Ensembles**, and **Deep Adaptive Predictive Modeling**, ensuring every classification decision is backed by a statistically valid measure of confidence.
+[![License](https://img.shields.io/badge/license-Apache%202.0-2a78d6)](LICENSE)
+![Bands](https://img.shields.io/badge/spectral%20bands-6-2a78d6)
+![Scene](https://img.shields.io/badge/scene-330%C3%97307-2a78d6)
+![Classes](https://img.shields.io/badge/classes-7-2a78d6)
+![Backbones](https://img.shields.io/badge/backbones-11-eb6834)
+![UQ methods](https://img.shields.io/badge/uncertainty%20methods-11-1baf7a)
+![Framework](https://img.shields.io/badge/TensorFlow%20%2F%20Keras-FF6F00?logo=tensorflow&logoColor=white)
 
----
+<img src="docs/figures/dataset/scene_overview.png" width="100%" alt="Natural colour, false colour and reference labels of the 6-band scene">
 
-## 📑 Table of Contents
+</div>
 
-1. [📌 Project Overview](#-project-overview)
-2. [📂 Repository Structure](#-repository-structure)
-3. [📊 Dataset & Usage](#-dataset--usage)
-4. [🛠️ Workflow & Methodology](#-workflow--methodology)
-    * [Method 1: Baseline Uncertainty](#method-1-baseline-uncertainty)
-    * [Method 2: CREDIT (Calibration-Aware)](#method-2-credit-calibration-aware)
-    * [Method 3: DAPM (Deep Adaptive Modeling)](#method-3-dapm-deep-adaptive-modeling)
-    * [Method 4: Ensemble (CreDE)](#method-4-ensemble-crede)
-    * [Method 5: MultiCP (Multi-head Conformal)](#method-5-multicp-multi-head-conformal)
-    * [Method 6: SACP (Self-Adaptive Conformal)](#method-6-sacp-self-adaptive-conformal)
-    * [Method 7: SCMCP (Spatial MultiCP)](#method-7-scmcp-spatial-multicp)
-    * [Method 8: Focal Loss & CB Focal Loss](#method-8-focal-loss--cb-focal-loss)
-    * [Method 9: EDL (Evidential Deep Learning)](#method-9-edl-evidential-deep-learning)
-    * [Method 10: CDL (Credal Deep Learning)](#method-10-cdl-credal-deep-learning)
-    * [Method 11: MambaHSI](#method-11-mambahsi)
-5. [🚀 Getting Started](#-getting-started)
-6. [📚 Resources & References](#-resources--references)
-7. [🌐 6 Bands Data - Directory & Kaggle Links](#-6-bands-data---directory--kaggle-links)
+A land-cover classifier labels every pixel, including the ones it should not be sure about. This project
+asks **how well modern uncertainty methods tell us which pixels of a land-cover map to trust**. We train
+11 deep classifiers on a 6-band multispectral scene, attach 11 uncertainty-quantification (UQ) methods to
+them, and measure whether each method's promise holds.
+
+> This page is the short version. The full write-up, with the data analysis, maths and every figure, is in
+> **[`docs/`](docs/README.md)**, and each method folder has its own detailed README.
 
 ---
 
-## 📌 Project Overview
+## What we did
 
-This framework addresses the critical need for reliability in machine learning models deployed for Earth Observation and spatial analysis. By integrating multiple UQ paradigms, it allows researchers to:
+| Step | What | Details |
+|:-:|---|---|
+| **1** | **Data.** A 330 × 307-pixel scene with 6 spectral bands and 7 land-cover classes (17,239 labelled pixels). Each pixel is classified from the 9 × 9 patch around it | [Data and set-up](docs/01_data_and_setup.md) |
+| **2** | **Classifiers.** 11 backbones: a CNN (AlexNet-style), a Fourier network (GFNet), Transformers (ViT-UNet, Hiera), state-space models (MambaHSI S/B/L), a graph network (SpatialGCN) and foundation-style models (DOFA, GeoRSCLIP) | [Models and classification](docs/02_models_and_classification.md) |
+| **3** | **Uncertainty.** 11 UQ methods on top: five conformal-prediction variants, spatial and multi-head conformal prediction, credal ensembles and their distilled student, and a diffusion model with a statistical test | [Methods in plain words](docs/03_uncertainty_methods.md) |
+| **4** | **Evaluation.** Coverage of the 95% promise overall and per class, size and shape of the prediction sets, and how much of the map each method calls "uncertain" | [Uncertainty results](docs/04_uncertainty_results.md) |
 
-* **Identify Out-of-Distribution (OOD) Pixels**: Detect areas where the model is likely to fail.
-* **Calibrate Probabilistic Outputs**: Ensure that a 90% confidence score actually corresponds to 90% accuracy.
-* **Generate Valid Prediction Sets**: Use Conformal Prediction to produce sets of classes that contain the true label with a user-specified probability (e.g., 95%).
-* **Analyze Spatial Uncertainty**: Visualize uncertainty maps across entire scenes (Hyperspectral/Multispectral).
-
-**Key Features:**
-* **Deep Architectures**: AlexNet CNN, GFNet (Global Filter Network), and ViT-UNet (Vision Transformer).
-* **Modular Design**: Each method is self-contained with its own training logic, detailed theory/summary logs in `.md` format, and result visualization.
-* **Remote Sensing Ready**: Built-in support for multispectral data structures.
+The scene is a useful test because the models are **not** all perfect: accuracy ranges from 68.8% to
+99.9%, so we can see how each uncertainty method behaves on both strong and weak models.
 
 ---
 
-## 📂 Repository Structure
+## End result
 
-The project is organized into a clean, modular architecture matching the root layout of `classification_dias`:
+### Classification
 
-```text
-.
-├── baseline/      # 📂 Standard UQ (MC Dropout, Temp Scaling)
-├── credit/        # 📂 CREDIT: Calibration-aware training
-├── dapm/          # 📂 DAPM: Deep Adaptive Predictive Modeling
-├── dofa/          # 📂 DOFA: Dynamic Wavelength Tokenization
-├── ensemble/      # 📂 CreDE: Credal Deep Ensembles
-├── georsclip/     # 📂 GeoRSCLIP: Geospatial Vision-Language Foundation Model
-├── mambahsi/      # 📂 MambaHSI Architecture for classification
-├── multicp/       # 📂 MultiCP: Multi-head Conformal Prediction
-├── multicp_sacp/  # 📂 SCMCP: Spatial MultiCP
-├── sacp/          # 📂 SACP: Self-Adaptive Conformal Prediction
-├── scripts/       # 📂 Execution & Surveillance Automation
-├── spatialgcn/    # 📂 SpatialGCN: Spatial Graph Convolutional Networks
-└── README.md      # 📑 Documentation
+**Nine of the 11 models are near-perfect (99.3–99.9%).** MambaHSI-Large is the best at 99.88%. The two
+exceptions, **SpatialGCN (84.6%)** and **DOFA-Spectral (68.8%)**, are the most useful for testing
+uncertainty methods, because they make real mistakes. Part of the near-perfect accuracy is optimistic,
+because of how the pixels were split (finding F8).
+
+### Uncertainty: eight findings
+
+| # | Finding | Evidence |
+|:-:|---|---|
+| F1 | **The 95% guarantee holds.** Split, class-conditional, clustered and RC3P conformal prediction cover the true class 94.9–97.2% of the time on all 11 backbones | [§8.1](docs/04_uncertainty_results.md#81-rq1--does-the-95-guarantee-hold) |
+| F2 | **What the answer looks like depends on model quality.** Accurate models give one class, or abstain (an empty set) on 3–5% of pixels. SpatialGCN lists 2+ classes for 38–53% of pixels, DOFA-Spectral for 74–78% | [§8.2](docs/04_uncertainty_results.md#82-rq2--what-do-the-prediction-sets-look-like) |
+| F3 | **"95% on average" can hide a failing class.** Split CP covers AlexNet's rarest class only 73.5% of the time. Class-conditional CP brings it back to 95.6% | [§8.3](docs/04_uncertainty_results.md#83-rq3--is-coverage-fair-across-classes) |
+| F4 | **RC3P over-delivers** (95.7–97.2%): safe, but its sets are larger than needed | [§8.1](docs/04_uncertainty_results.md#81-rq1--does-the-95-guarantee-hold) |
+| F5 | **The method's rule decides how much of the map is "uncertain"**: 0.09–0.25% (DAPM), 9–13% (CREDIT, MultiCP), 32–38% (SCMCP, 9 × 9 window) | [§8.5](docs/04_uncertainty_results.md#85-rq5--how-much-of-the-map-does-each-method-call-uncertain) |
+| F6 | **Requiring 7 heads to agree multiplies the misses.** MultiCP's joint coverage is 71.8%, close to 0.95⁷ = 69.8% | [§8.6](docs/04_uncertainty_results.md#86-rq6--multi-head-and-spatial-variants) |
+| F7 | **The ensembles disagree mostly off the labelled area.** 98.2–99.7% of the pixels CREDIT flags are unlabelled | [§8.7](docs/04_uncertainty_results.md#87-rq7--what-do-ensembles-say-about-the-two-kinds-of-uncertainty) |
+| F8 | **Accuracy is inflated by the random split.** Every test patch contains training pixels (40.2 of 81 on average) | [§4.3](docs/01_data_and_setup.md#43-how-pixels-are-split-and-why-it-matters) |
+
+<p align="center"><img src="docs/figures/uncertainty/coverage_all_backbones.png" width="95%" alt="Coverage of the five baseline conformal methods on all 11 backbones"></p>
+
+*Coverage of the five baseline conformal methods on every backbone. Dots inside the shaded band are
+statistically indistinguishable from the 95% target. RAPS (bottom row) sits at the model's accuracy because,
+as implemented, it always returns only the top class.*
+
+### Which method to use
+
+| Method | Verdict |
+|---|---|
+| **Class-conditional CP** | ✅ **Recommended default.** Valid overall *and* for every class (≥ 0.90), at no extra cost at test time |
+| **RC3P** | ✅ Valid and fair, but slightly larger sets than needed |
+| **Split CP** | ⚠️ Valid on average, but can under-cover rare classes (worst class 0.74) |
+| **Clustered CP** | ⚠️ Valid on average; fairer than Split CP, but not for every class (worst 0.79) |
+| **RAPS (as implemented)** | ❌ Coverage equals accuracy rather than 95% on accurate models |
+| **SACP** | ⚠️ Spatially coherent maps; ~99.5% coverage, which comes from never allowing an empty set |
+| **MultiCP / SCMCP** | ❌ ≈ 72% joint coverage, below the 95% target |
+| **CreDE / CREDIT** | ✅ Best at showing *where the model has never been trained* (no formal guarantee) |
+| **DAPM** | ❌ Flags only ~0.1% of the scene |
+
+---
+
+## Read more
+
+| | Where |
+|---|---|
+| 📖 **Full report** (data, set-up, models, methods, results, limitations) | [`docs/`](docs/README.md) |
+| Five conformal methods on AlexNet / GFNet / ViT-UNet | [`baseline/`](baseline/README.md) |
+| Spatially-aware conformal prediction (SACP) | [`sacp/`](sacp/README.md) |
+| Multi-head conformal prediction (MultiCP) and its smoothed version (SCMCP) | [`multicp/`](multicp/README.md) · [`multicp_sacp/`](multicp_sacp/README.md) |
+| Credal ensembles (CreDE) and the distilled student (CREDIT) | [`ensemble/`](ensemble/README.md) · [`credit/`](credit/README.md) |
+| Diffusion-based uncertainty (DAPM) | [`dapm/`](dapm/README.md) |
+| Extra backbones, each with the five conformal methods | [`dofa/`](dofa/README.md) · [`georsclip/`](georsclip/README.md) · [`mambahsi/`](mambahsi/README.md) · [`spatialgcn/`](spatialgcn/README.md) |
+| Limitations, read before using the numbers | [Chapter 5](docs/05_limitations.md) |
+
+**Data and weights.** 🤗 [Dataset](https://huggingface.co/datasets/DaneshSelwal/Classification-6Bands-Data) ·
+🤗 [Trained models](https://huggingface.co/DaneshSelwal/Classification-6Bands-Models) ·
+[Kaggle notebooks and how to reproduce](docs/06_reproducibility_and_references.md#11-repository-map-and-reproducibility) ·
+companion 65-band study: [Hyperspectral-LandCover-Uncertainty](https://github.com/DaneshSelwal/Hyperspectral-LandCover-Uncertainty)
+
+---
+
+## Licence and citation
+
+Released under the [Apache License 2.0](LICENSE).
+
+```bibtex
+@misc{selwal2026sixband_uq,
+  author       = {Selwal, Danesh},
+  title        = {Trust, Pixel by Pixel: Uncertainty Quantification for 6-Band
+                  Multispectral Land-Cover Classification},
+  year         = {2026},
+  howpublished = {\url{https://github.com/DaneshSelwal/Multispectral-LandCover-Uncertainty}}
+}
 ```
-
----
-
-## 📊 Dataset & Usage
-
-**This is a Template Pipeline.**
-
-To use this repository with your own classification data:
-
-1. **Prepare Data**: Ensure your features and labels are in `.csv` or `.npy` format.
-2. **Path Configuration**:
-    * Place your data in the `./` or `data/` directory.
-    * Notebooks use relative paths (e.g., `../data/data.csv`) for compatibility with Google Colab and local environments.
-3. **Model Selection**: Choose from AlexNet, GFNet, or ViT-UNet by modifying the configuration in the respective notebooks.
-
----
-
-## 🛠️ Workflow & Methodology
-
-> **Note**: Each method subfolder includes a comprehensive `.md` file detailing the mathematical framework, implementation logic, and experimental logs.
-
----
-
-### Method 1: Baseline Uncertainty
-**Location**: `baseline`
-Establishes the performance and uncertainty floor using standard Bayesian approximations and Conformal Prediction.
-* **Techniques**: Monte Carlo Dropout, Temperature Scaling, Conformal Prediction (SplitCP, CcCP, RC3P, ClusteredCP, RAPS).
-* **Models**: AlexNet-CNN, GFNet, ViT-UNet.
-* **Trained Weights Artifacts**: `AlexNet_CNN_best.keras`, `GFNet_best.keras`, `ViT_UNet_best.keras` (Input: 9×9×6, Output: 7 classes).
-
-#### 6-Band Baseline Performance (100 Epochs, Kaggle GPU)
-| Model | Test Accuracy | Cohen's Kappa | Macro F1 | Weighted F1 | Test Brier | Test ECE (15-bin) | Status |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **AlexNet_CNN** | **99.70%** | **0.9959** | **0.9955** | **0.9970** | **0.0044** | **0.0013** | ✅ Verified |
-| **GFNet** | 99.63% | 0.9950 | 0.9954 | 0.9963 | 0.0057 | 0.0089 | ✅ Verified |
-| **ViT_UNet** | 99.28% | 0.9902 | 0.9904 | 0.9928 | 0.0136 | 0.0388 | ✅ Verified |
-
-#### Conformal Prediction Evaluation Summary ($\alpha = 0.05$, Target Coverage = 95.0%)
-| Method | AlexNet Coverage | GFNet Coverage | ViT-UNet Coverage | Avg Set Size | Median Set Size |
-|:---|:---:|:---:|:---:|:---:|:---:|
-| **SplitCP** | 95.78% | 94.99% | 95.41% | 0.95 - 0.96 | 1.0 |
-| **CcCP (Class-Conditional)** | 96.47% | 96.19% | 95.59% | 0.96 | 1.0 |
-| **RC3P (Rank-Calibrated)** | 97.17% | 96.57% | 96.29% | 0.96 - 0.97 | 1.0 |
-| **ClusteredCP (K=4)** | 96.52% | 95.96% | 95.36% | 0.96 | 1.0 |
-| **RAPS** | 99.91% | 99.77% | 99.40% | 1.00 | 1.0 |
-
-### Method 2: CREDIT
-**Location**: `credit`
-Confidence-Calibrated Robustness for Deep Image Classification.
-* **Focus**: Improving the alignment between model confidence and actual performance.
-* **Output**: Calibrated spatial uncertainty maps.
-
-### Method 3: DAPM
-**Location**: `dapm`
-Deep Adaptive Predictive Modeling for classification under distribution shift.
-* **Architecture**: Includes Encoder, Diffusion, and Multi-head decoders.
-* **Result**: High-resolution p-value distributions and uncertainty masks.
-
-### Method 4: Ensemble (CreDE)
-**Location**: `ensemble`
-Credal Deep Ensembles (CreDE) for robust uncertainty.
-* **Process**: Training multiple model instances to capture epistemic uncertainty.
-* **Metrics**: Credal entropy and variance-based measures.
-
-### Method 5: MultiCP
-**Location**: `multicp`
-Multi-head Conformal Prediction.
-* **Goal**: Distribution-free uncertainty sets with finite-sample validity.
-* **Output**: Performance measures across different significance levels ($\alpha$).
-
-### Method 6: SACP
-**Location**: `sacp`
-Self-Adaptive Conformal Prediction.
-* **Advantage**: Online calibration and adaptation across varying spatial windows (ws=3, 5, 7, 9).
-* **Summary**: Combined per-class coverage reports for all models.
-
-### Method 7: SCMCP (Spatial MultiCP)
-**Location**: `multicp_sacp`
-Spatial Multi-Head Conformal Prediction.
-* **Core**: Combines spatial probability smoothing with multi-head conformal intersection.
-* **Feature**: Produces tight, spatially-coherent uncertainty regions by intersecting calibrated sets from $K$ heads after local smoothing.
-
-### Method 8: Focal Loss & CB Focal Loss
-**Location**: `trials/focal_loss` & `trials/cb_focal_loss`
-* **Focus**: Addressing class imbalance using standard and Class-Balanced Focal Loss.
-* **Output**: Improved minority class prediction with respective uncertainty estimates.
-
-### Method 9: EDL (Evidential Deep Learning)
-**Location**: `trials/edl` & `trials/edl_v2`
-* **Core**: Uses Subjective Logic to place a Dirichlet distribution over class probabilities.
-* **Goal**: Directly quantifies epistemic and aleatoric uncertainty without sampling.
-
-### Method 10: CDL (Credal Deep Learning)
-**Location**: `trials/cdl`
-* **Goal**: Robust uncertainty quantification using imprecise probabilities and credal sets.
-
-### Method 11: MambaHSI
-**Location**: `mambahsi`
-* **Architecture**: State-of-the-art Mamba state-space models adapted for Hyperspectral Imagery (HSI).
-* **Focus**: Efficient long-range spatial-spectral dependencies modeling.
-
----
-
-### Method 12: DOFA
-**Location**: `dofa`
-Dynamic Wavelength Tokenization.
-* **Architecture**: DOFA Spectral and DOFA Hiera Fusion for robust multispectral tokenization.
-* **Focus**: Analyzing prediction stability across continuous spectral channels.
-
----
-
-### Method 13: GeoRSCLIP
-**Location**: `georsclip`
-Geospatial Vision-Language Foundation Model.
-* **Architecture**: Text-head fine-tuning on GeoRSCLIP representations.
-* **Focus**: Leveraging multimodal pre-training for remote sensing tasks.
-
-### Method 14: SpatialGCN
-**Location**: `spatialgcn`
-Spatial Graph Convolutional Networks.
-* **Architecture**: GCN processing on spatial grid topologies.
-* **Focus**: Capturing complex spatial dependencies in classification maps.
-
----
-
-## 🚀 Getting Started (Colab-First)
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/DaneshSelwal/Classification_Uncertainty_Quantification_Analysis
-   ```
-2. **Upload to Google Drive**:
-   Upload the repository folder to your `MyDrive/` directory.
-3. **Run in Colab**:
-   Navigate to any phase (e.g., `baseline/Model_training.ipynb`) and open with Google Colab.
-   * Notebooks are pre-configured to mount `/content/drive` and find data in `/content/drive/MyDrive/`.
-4. **Execution Order**:
-   **Data Prep** $\rightarrow$ **Baseline Training** $\rightarrow$ **Advanced UQ Methods** $\rightarrow$ **Visualization**.
-
----
-
-## 📚 Resources & References
-
-This project leverages state-of-the-art research in Uncertainty Quantification and Remote Sensing. Below are the key resources and research papers utilized in this pipeline:
-
-### 📖 Research Papers
-
-* **Weighted Aggregation of Conformity Scores**: *Weighted Aggregation of Conformity Scores for Classification*. [ArXiv:2407.10230](https://arxiv.org/abs/2407.10230)
-* **Uncertainty Sets for Image Classifiers**: *Uncertainty Sets for Image Classifiers using Conformal Prediction*. [ArXiv:2009.14193](https://arxiv.org/abs/2009.14193)
-* **Conformal Prediction via Label Ranking**: *Conformal Prediction for Deep Classifier via Label Ranking*. [ArXiv:2310.06430](https://arxiv.org/abs/2310.06430)
-* **Credal Ensemble Distillation**: *Credal Ensemble Distillation for Uncertainty Quantification*. [ArXiv:2511.13766](https://arxiv.org/abs/2511.13766)
-* **Calibration of Modern Neural Networks**: *On Calibration of Modern Neural Networks*. [ICML 2017](https://arxiv.org/abs/1706.04599)
-* **Deep Ensembles**: Lakshminarayanan, B., et al. (2017). *Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles*. [NeurIPS 2017](https://arxiv.org/abs/1612.01474)
-
-### 🛠️ Libraries & Frameworks
-
-* **SACP (Self-Adaptive CP)**: [GitHub](https://github.com/J4ckLiu/SACP)
-* **TensorFlow / Keras**: Deep learning frameworks utilized for modeling architectures like AlexNet, GFNet, and ViT-UNet.
-
----
-_This repository is developed under the guidance of Dr. Mahesh Pal._
-
----
-
-# 6 Bands Data - Directory & Kaggle Links
-
-Below is the directory structure mirroring our local repository, with direct links to the notebooks on Kaggle:
-
-* 📁 **baseline/**
-    * 📓 [Model_training.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-baseline-k01) — `cuq6-baseline-k01` ✅ **COMPLETE** (Fresh weights & metrics verified)
-    * 📓 [Model_uncertainty_comparison.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-uncertainty-k02) — `cuq6-uncertainty-k02` ✅ **COMPLETE** (Conformal prediction evaluated)
-* 📁 **credit/**
-    * 📓 [Model_training_credit.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-credit-k03) — `cuq6-credit-k03` ✅ **COMPLETE** (CreDE Evidential distillation verified)
-* 📁 **data/**
-* 📁 **ensemble/**
-    * 📓 [Model_training_ensembles.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-ensemble-k04) — `cuq6-ensemble-k04` ⚠️ **CANCELLED** (not re-run in this pass)
-    * 📓 [Model_uncertainty_CreDE.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-crede-k05) — `cuq6-crede-k05` ✅ **COMPLETE** (Credal Deep Ensemble evaluation)
-* 📁 **multicp/**
-    * 📓 [Model_training_multihead.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-multicp-k06) — `cuq6-multicp-k06` ⚠️ **CANCELLED** (not re-run in this pass)
-    * 📓 [Model_uncertainty_multicp.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-multicp-uq-k07) — `cuq6-multicp-uq-k07` ❌ **ERROR** (depends on multicp-k06)
-* 📁 **multicp_sacp/**
-    * 📓 [Model_uncertainty_multicp_sacp.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-multicp-sacp-k08) — `cuq6-multicp-sacp-k08` ❌ **ERROR** (depends on multicp-k06)
-* 📁 **sacp/**
-    * 📓 [Model_sacp_comparison.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-sacp-k09) — `cuq6-sacp-k09` ✅ **COMPLETE** (Multi-window SACP evaluated)
-* 📁 **mambahsi/**
-    * 📓 [Model_training_mambahsi.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-mambahsi-k10) — `cuq6-mambahsi-k10` ✅ **COMPLETE** (Fresh 6-band SSM weights trained)
-    * 📓 [Model_uncertainty_comparison_mambahsi.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-mambahsi-uq-k11) — `cuq6-mambahsi-uq-k11` ✅ **COMPLETE** (SSM conformal prediction evaluated)
-* 📁 **dofa/**
-    * 📓 [Model_training.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-dofa-k12) — `cuq6-dofa-k12` ✅ **COMPLETE** (Fresh 6-band DOFA/Hiera weights trained)
-    * 📓 [Model_uncertainty_comparison.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-dofa-uq-k13) — `cuq6-dofa-uq-k13` ✅ **COMPLETE** (DOFA conformal prediction evaluated)
-* 📁 **georsclip/**
-    * 📓 [Model_training.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-georsclip-k14) — `cuq6-georsclip-k14` ✅ **COMPLETE** (Vision-language text-head architecture)
-    * 📓 [Model_uncertainty_comparison.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-georsclip-uq-k15) — `cuq6-georsclip-uq-k15` ✅ **COMPLETE** (GeoRSCLIP conformal prediction evaluated)
-* 📁 **spatialgcn/**
-    * 📓 [Model_training.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-spatialgcn-k16) — `cuq6-spatialgcn-k16` ✅ **COMPLETE** (Spatial graph convolution architecture)
-    * 📓 [Model_uncertainty_comparison.ipynb](https://www.kaggle.com/code/daneshselwal/cuq6-spatialgcn-uq-k17) — `cuq6-spatialgcn-uq-k17` ✅ **COMPLETE** (SpatialGCN conformal prediction evaluated)
