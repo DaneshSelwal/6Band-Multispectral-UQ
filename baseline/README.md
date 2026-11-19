@@ -146,7 +146,7 @@ s = \sum_{j \,\text{ranked above } y} \hat p_j(x) \;+\; \lambda \cdot \max(0,\ \
 **Why RAPS collapses to top-1 here.** If the true class is ranked first, the score is exactly **0**.
 That holds for > 99% of calibration pixels, so $`\hat q = 0`$. The set-building loop then adds the top class
 (cumulative mass 0 ≤ 0) and stops at the second. Every set holds exactly one class, and **coverage equals
-accuracy** (0.994–0.999), not 95%. The original RAPS adds a random tie-break (`u · p_y`) that would avoid
+accuracy** (0.994–0.999), not 95%. The original RAPS adds a random tie-break ($`u \cdot \hat p_y`$) that would avoid
 this; the notebook omits it. On a weaker model (DOFA-Spectral, SpatialGCN) the true class is often not
 ranked first, and RAPS behaves as intended (≈ 0.95).
 

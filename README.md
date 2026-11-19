@@ -267,12 +267,15 @@ conclusions survive a change of architecture.
 ```mermaid
 flowchart TB
     subgraph AlexNet["AlexNet-CNN (local texture)"]
+        direction TB
         a1["9×9×6 patch"] --> a2["5 × Conv 3×3"] --> a3["MaxPool"] --> a4["Dense layers + dropout"] --> a5["softmax (7)"]
     end
     subgraph GFNet["GFNet (global frequency filter)"]
+        direction TB
         g1["9×9×6 patch"] --> g2["3×3 tokens → 9 tokens"] --> g3["FFT → learned filter → iFFT<br/>+ MLP, repeated"] --> g4["pool"] --> g5["softmax (7)"]
     end
     subgraph ViT["ViT-UNet (attention + skip links)"]
+        direction TB
         v1["9×9×6 patch"] --> v2["3×3 tokens + CLS"] --> v3["Transformer layers<br/>with U-Net style skips"] --> v4["Dense head"] --> v5["softmax (7)"]
     end
 ```
