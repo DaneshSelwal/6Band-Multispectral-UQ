@@ -1,8 +1,8 @@
 <div align="center">
 
-# Trust, Pixel by Pixel
+# Uncertainty Quantification for 6-Band Multispectral Land-Cover Classification
 
-### Uncertainty Quantification for 6-Band Multispectral Land-Cover Classification
+### A Comparative Study of Conformal, Credal and Diffusion-Based Methods across 11 Deep Classifiers
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-2a78d6)](LICENSE)
 ![Bands](https://img.shields.io/badge/spectral%20bands-6-2a78d6)
@@ -100,7 +100,7 @@ as implemented, it always returns only the top class.*
 **Data and weights.** 🤗 [Dataset](https://huggingface.co/datasets/DaneshSelwal/Classification-6Bands-Data) ·
 🤗 [Trained models](https://huggingface.co/DaneshSelwal/Classification-6Bands-Models) ·
 [Kaggle notebooks and how to reproduce](docs/06_reproducibility_and_references.md#11-repository-map-and-reproducibility) ·
-companion 65-band study: [Hyperspectral-LandCover-Uncertainty](https://github.com/DaneshSelwal/Hyperspectral-LandCover-Uncertainty)
+companion 65-band study: [DIAS-65Band-Hyperspectral-UQ](https://github.com/DaneshSelwal/DIAS-65Band-Hyperspectral-UQ)
 
 ---
 
@@ -111,9 +111,9 @@ Released under the [Apache License 2.0](LICENSE).
 ```bibtex
 @misc{selwal2026sixband_uq,
   author       = {Selwal, Danesh},
-  title        = {Trust, Pixel by Pixel: Uncertainty Quantification for 6-Band
-                  Multispectral Land-Cover Classification},
+  title        = {Uncertainty Quantification for 6-Band Multispectral
+                  Land-Cover Classification},
   year         = {2026},
-  howpublished = {\url{https://github.com/DaneshSelwal/Multispectral-LandCover-Uncertainty}}
+  howpublished = {\url{https://github.com/DaneshSelwal/6Band-Multispectral-UQ}}
 }
 ```

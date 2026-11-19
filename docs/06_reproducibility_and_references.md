@@ -7,7 +7,7 @@
 ## 11. Repository map and reproducibility
 
 ```
-Multispectral-LandCover-Uncertainty/
+6Band-Multispectral-UQ/
 ├── README.md              ← overview: what we did and the end result
 ├── LICENSE                ← Apache 2.0
 ├── docs/                  ← full report: six chapters + figures/
@@ -29,7 +29,7 @@ Multispectral-LandCover-Uncertainty/
 |---|---|
 | Data (`data.csv`, `ref.csv`) | 🤗 [datasets/DaneshSelwal/Classification-6Bands-Data](https://huggingface.co/datasets/DaneshSelwal/Classification-6Bands-Data) |
 | Trained weights | 🤗 [DaneshSelwal/Classification-6Bands-Models](https://huggingface.co/DaneshSelwal/Classification-6Bands-Models) |
-| 65-band companion study | [Hyperspectral-LandCover-Uncertainty](https://github.com/DaneshSelwal/Hyperspectral-LandCover-Uncertainty) |
+| 65-band companion study | [DIAS-65Band-Hyperspectral-UQ](https://github.com/DaneshSelwal/DIAS-65Band-Hyperspectral-UQ) |
 | Umbrella project | [Classification_Uncertainty_Quantification_Analysis](https://github.com/DaneshSelwal/Classification_Uncertainty_Quantification_Analysis) |
 
 **Kaggle notebooks** (one per step; status from the repository's run log):
@@ -61,10 +61,10 @@ fixed (42; AlexNet 10). The notebooks find `data.csv`/`ref.csv` (or `k001.csv`/`
 ```bibtex
 @misc{selwal2026sixband_uq,
   author       = {Selwal, Danesh},
-  title        = {Trust, Pixel by Pixel: Uncertainty Quantification for 6-Band
-                  Multispectral Land-Cover Classification},
+  title        = {Uncertainty Quantification for 6-Band Multispectral
+                  Land-Cover Classification},
   year         = {2026},
-  howpublished = {\url{https://github.com/DaneshSelwal/Multispectral-LandCover-Uncertainty}}
+  howpublished = {\url{https://github.com/DaneshSelwal/6Band-Multispectral-UQ}}
 }
 ```
 
