@@ -116,7 +116,7 @@ classified.
 - Simplified, from-scratch Mamba (see the note above).
 - With accuracy this close to 100%, differences between variants are within run-to-run noise. Only one
   seed was run.
-- Random-split optimism ([main README §10](../docs/05_limitations.md#10-limitations-and-threats-to-validity)).
+- Random-split optimism ([main README §10](../README.md#10-limitations-and-threats-to-validity)).
 
 ## References
 
