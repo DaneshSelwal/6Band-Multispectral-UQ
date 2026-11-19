@@ -98,7 +98,7 @@ convincing enough.
 **Why empty sets appear here.** These models are wrong on only 0.3–0.7% of pixels. To "spend" a 5% error
 budget, $`\hat q`$ must be so small that the least-confident ~5% of pixels (mostly *correct*) clear the bar
 for no class. An empty set therefore means *"one of the 5% least confident pixels"*, i.e. an abstention, not
-*"probably wrong"* ([main README Figure 15](../README.md#82-rq2--what-do-the-prediction-sets-look-like)).
+*"probably wrong"* ([main README Figure 15](../docs/04_uncertainty_results.md#82-rq2--what-do-the-prediction-sets-look-like)).
 
 ### 3.2 Class-conditional CP
 

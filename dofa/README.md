@@ -38,7 +38,7 @@ assignment is plausible from the spectra (main README §3.3) but is **not docume
 
 ### Why DOFA-Spectral is weak
 
-The [data analysis](../README.md#33-spectral-behaviour) shows that labels 2, 3, 4 and 6 overlap when
+The [data analysis](../docs/01_data_and_setup.md#33-spectral-behaviour) shows that labels 2, 3, 4 and 6 overlap when
 judged by spectrum alone (Figure 7 of the main README), and that labels 1 and 5 differ only in brightness.
 Patch averaging removes the spatial layout that separates them. Hiera keeps it, which lifts accuracy from
 68.8% to 99.4%.
@@ -187,7 +187,7 @@ model has no notion of parcel edges.
 
 - The band wavelengths are inferred (Landsat-like), not documented.
 - DOFA is trained **from scratch** here; this is not the pretrained DOFA foundation model.
-- The random-split optimism ([main README §10](../README.md#10-limitations-and-threats-to-validity)) applies, most strongly to Hiera and Fusion.
+- The random-split optimism ([main README §10](../docs/05_limitations.md#10-limitations-and-threats-to-validity)) applies, most strongly to Hiera and Fusion.
 
 ## References
 

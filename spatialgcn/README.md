@@ -141,7 +141,7 @@ the weak classes (labels 4–6).
 
 ## 5. Caveats
 
-- Random-split optimism ([main README §10](../README.md#10-limitations-and-threats-to-validity)).
+- Random-split optimism ([main README §10](../docs/05_limitations.md#10-limitations-and-threats-to-validity)).
 - Label 7 coverage rests on 68 evaluation pixels.
 
 ## References

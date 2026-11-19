@@ -93,7 +93,7 @@ turns similarities into probabilities.*
 ## 3. Caveats
 
 - Placeholder prompts and no pretraining (see the box above).
-- Random-split optimism ([main README §10](../README.md#10-limitations-and-threats-to-validity)).
+- Random-split optimism ([main README §10](../docs/05_limitations.md#10-limitations-and-threats-to-validity)).
 
 ## References
 
